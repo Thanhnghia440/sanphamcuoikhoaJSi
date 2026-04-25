@@ -13,22 +13,39 @@
 <!-- NAVBAR -->
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
   <div class="container">
-    <a class="navbar-brand" href="index.html">Student Manager</a>
+    <a class="navbar-brand" href="#">Student Manager</a>
 
-    <div class="ms-auto">
-      <button class="btn btn-success me-2" onclick="location.href='login.html'">Đăng nhập</button>
-      <button class="btn btn-danger">Đăng ký</button>
+    <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#nav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="nav">
+      <ul class="navbar-nav me-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="#">Trang chủ</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="C:\Users\Nghia\.vscode\cinema\sanphamcuoikhoaJSi\login.html">Học sinh</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Điểm</a>
+        </li>
+      </ul>
+
+      <div>
+        <button class="btn btn-success me-2" onclick="window.location.href='login.html'">Đăng nhập</button>
+        <button class="btn btn-danger" onclick="window.location.href='register.html'">Đăng ký</button>
+      </div>
     </div>
   </div>
 </nav>
-
 <!-- FORM -->
 <div class="d-flex justify-content-center align-items-center" style="height:85vh;">
-  <div class="card p-4 shadow" style="width:400px;">
+<form class="card p-4 shadow" style="width:400px;">
     
     <h3 class="text-center mb-3">Tạo tài khoản</h3>
 
-    <input id="name" class="form-control mb-2" placeholder="Họ và tên">
+   <input id="username" class="form-control mb-2" placeholder="Họ và tên">
     <input id="email" class="form-control mb-2" placeholder="Email">
     <input id="password" type="password" class="form-control mb-2" placeholder="Mật khẩu">
     <input id="confirm" type="password" class="form-control mb-3" placeholder="Xác nhận mật khẩu">
@@ -42,61 +59,101 @@
 
   </div>
 </div>
+</form>
 
 <!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js"></script>
 
-<script>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
 const firebaseConfig = {
   apiKey: "AIzaSyCBh-wCR02v7WDHbFyiOdbauRi0pUUZ25Q",
   authDomain: "finaljsi-7d280.firebaseapp.com",
   projectId: "finaljsi-7d280",
 };
 
-// Bắt sự kiện submit form đăng ký
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+// global
+window.db = db;
+window.fb = { collection, addDoc, getDocs };
+
+// Lấy form
 const form = document.querySelector("form");
 
-form.addEventListener("submit", function (e) {
-  e.preventDefault(); // Ngăn reload trang
+form.addEventListener("submit", async function (e) {
+  e.preventDefault();
 
-  // Lấy dữ liệu người dùng nhập
   const username = document.getElementById("username").value.trim();
   const email = document.getElementById("email").value.trim();
   const password = document.getElementById("password").value.trim();
+  const confirm = document.getElementById("confirm").value.trim();
 
-  // Validate dữ liệu
-  if (username.length < 6) {
-    alert("Username tối thiểu 6 ký tự");
+  // Validate
+  if (username.length < 3) {
+    alert("Tên phải ít nhất 3 ký tự");
     return;
   }
 
-  if (password.length < 8) {
-    alert("Mật khẩu tối thiểu 8 ký tự");
+  if (password.length < 6) {
+    alert("Mật khẩu ít nhất 6 ký tự");
     return;
   }
 
-  // Lấy danh sách user từ localStorage
+  if (password !== confirm) {
+    alert("Mật khẩu không khớp");
+    return;
+  }
+
   let users = JSON.parse(localStorage.getItem("users")) || [];
 
-  // Kiểm tra trùng username hoặc email
   const isExist = users.find(
     (u) => u.username === username || u.email === email
   );
 
   if (isExist) {
-    alert("User hoặc Email đã tồn tại");
+    alert("Tài khoản hoặc email đã tồn tại");
     return;
   }
 
-  // Lưu user mới
-  users.push({ username, email, password });
+  // ===== LƯU LOCAL =====
+  const newUser = {
+    username,
+    email,
+    password,
+    role: "teacher"
+  };
+
+  users.push(newUser);
   localStorage.setItem("users", JSON.stringify(users));
 
-  alert("Đăng ký thành công!");
+  // ===== LƯU FIREBASE =====
+  const querySnapshot = await fb.getDocs(fb.collection(db, "users"));
+
+  let exists = false;
+
+  querySnapshot.forEach((doc) => {
+    const data = doc.data();
+    if (data.username === username || data.email === email) {
+      exists = true;
+    }
+  });
+
+  if (!exists) {
+    await fb.addDoc(fb.collection(db, "users"), {
+      username,
+      email,
+      role: "teacher"
+    });
+  }
+
+  alert("Đăng ký giáo viên thành công!");
   window.location.href = "login.html";
 });
 </script>
-
 </body>
 </html>

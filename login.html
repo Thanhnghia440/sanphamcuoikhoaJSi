@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <title>Đăng nhập</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="auth.css">
 
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
@@ -22,10 +23,10 @@
     <div class="collapse navbar-collapse" id="nav">
       <ul class="navbar-nav me-auto">
         <li class="nav-item">
-          <a class="nav-link active" href="#">Trang chủ</a>
+          <a class="nav-link" href="#">Trang chủ</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#">Học sinh</a>
+          <a class="nav-link" href="C:\Users\Nghia\.vscode\cinema\sanphamcuoikhoaJSi\login.html">Học sinh</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="#">Điểm</a>
@@ -40,13 +41,12 @@
   </div>
 </nav>
 
-<!-- FORM -->
-<div class="d-flex justify-content-center align-items-center" style="height:80vh;">
-  <div class="card p-4 shadow" style="width:350px;">
-    <h3 class="text-center">Đăng nhập</h3>
+<div class="container mt-5">
+  <div class="card p-4 shadow">
+    <h4 class="mb-3">Đăng nhập giáo viên</h4>
 
-    <input id="email" class="form-control mb-2" placeholder="Email">
-    <input id="password" type="password" class="form-control mb-3" placeholder="Password">
+    <input id="username" class="form-control mb-3" placeholder="Tên đăng nhập">
+    <input id="password" type="password" class="form-control mb-3" placeholder="Mật khẩu">
 
     <button class="btn btn-primary w-100" onclick="login()">Đăng nhập</button>
   </div>
@@ -56,43 +56,64 @@
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js"></script>
 
-<script>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getFirestore, collection, getDocs, addDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
 const firebaseConfig = {
   apiKey: "AIzaSyCBh-wCR02v7WDHbFyiOdbauRi0pUUZ25Q",
   authDomain: "finaljsi-7d280.firebaseapp.com",
   projectId: "finaljsi-7d280",
 };
 
-// Bắt submit form đăng nhập
-const form = document.querySelector("form");
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
-form.addEventListener("submit", function (e) { 
-  e.preventDefault(); // Ngăn chặn submit mặc định
+// global
+window.db = db;
+window.fb = { collection, getDocs, addDoc };
+window.login = async function () {
+  const username = document.getElementById("username").value;
+  const password = document.getElementById("password").value;
 
-  // account có thể là username hoặc email
-  const account = document.getElementById("username").value.trim();
-  const password = document.getElementById("password").value.trim();
+  let users = JSON.parse(localStorage.getItem("users")) || [];
 
-  // Lấy danh sách user
-  const users = JSON.parse(localStorage.getItem("users")) || [];
-
-  // Kiểm tra đăng nhập
   const user = users.find(
-    (u) =>
-      (u.username === account || u.email === account) && u.password === password
+    (u) => u.username === username && u.password === password
   );
 
   if (!user) {
-    alert("Sai tài khoản hoặc mật khẩu");
+    alert("Sai tài khoản hoặc mật khẩu!");
     return;
   }
 
-  // Lưu user đang đăng nhập
+  // ===== LƯU LOCAL =====
   localStorage.setItem("currentUser", JSON.stringify(user));
+
+  // ===== LƯU FIREBASE =====
+  const querySnapshot = await fb.getDocs(fb.collection(db, "users"));
+
+  let exists = false;
+
+  querySnapshot.forEach((doc) => {
+    const data = doc.data();
+    if (data.username === user.username) {
+      exists = true;
+    }
+  });
+
+  if (!exists) {
+    await fb.addDoc(fb.collection(db, "users"), {
+      username: user.username,
+      email: user.email || "",
+      role: "teacher"
+    });
+  }
+
   alert("Đăng nhập thành công!");
   window.location.href = "index.html";
-});
-</script>
+};
 
+</script>
 </body>
 </html>

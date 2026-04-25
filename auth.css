@@ -1,0 +1,53 @@
+/* Căn giữa toàn màn hình */
+body {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+    background: linear-gradient(135deg, #74ebd5, #9face6);
+}
+
+/* Container giữa */
+.container {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Card login */
+.card {
+  width: 100%;
+  max-width: 350px; /* 👈 làm form gọn lại */
+  border-radius: 15px;
+  border: none;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+}
+
+/* Tiêu đề */
+.card h4 {
+  text-align: center;
+  font-weight: 600;
+}
+
+/* Input */
+.form-control {
+  border-radius: 10px;
+  padding: 10px;
+}
+
+/* Button */
+.btn-primary {
+  border-radius: 10px;
+  padding: 10px;
+  font-weight: 500;
+  transition: 0.3s;
+}
+
+.btn-primary:hover {
+  transform: scale(1.03);
+}
+
+/* Navbar fix không bị lệch */
+.navbar {
+  flex-shrink: 0;
+}

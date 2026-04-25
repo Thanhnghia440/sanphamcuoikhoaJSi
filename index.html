@@ -14,7 +14,9 @@
 <!-- NAVBAR -->
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
   <div class="container">
-    <a class="navbar-brand" href="#">Student Manager</a>
+    <a class="navbar-brand" href="#">Quản lí
+  học sinh</a>
+    </a>
 
     <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#nav">
       <span class="navbar-toggler-icon"></span>
@@ -26,7 +28,7 @@
           <a class="nav-link active" href="#">Trang chủ</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#">Học sinh</a>
+          <a class="nav-link" href="C:\Users\Nghia\.vscode\cinema\sanphamcuoikhoaJSi\hocsinh.html">Học sinh</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="#">Điểm</a>
@@ -40,7 +42,26 @@
     </div>
   </div>
 </nav>
+<script>
+// Hiển thị tên giáo viên
+window.onload = () => {
+  const user = JSON.parse(localStorage.getItem("currentUser"));
+  
+  if (user) {
+    const navDiv = document.querySelector(".navbar .btn-success").parentElement;
 
+    navDiv.innerHTML = `
+      <span class="text-white me-3">👋 ${user.username}</span>
+      <button class="btn btn-warning" onclick="logout()">Đăng xuất</button>
+    `;
+  }
+};
+
+function logout() {
+  localStorage.removeItem("currentUser");
+  window.location.href = "login.html";
+}
+</script>
 <!-- DASHBOARD -->
 <div class="container mt-4">
 
@@ -98,39 +119,103 @@
       </table>
     </div>
   </div>
-
+<footer class="text-center mt-4 mb-2">
+  &copy; 2026 Student Manager
+</footer>
 </div>
 
 <!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js"></script>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-<script>
-// 🔥 CONFIG CỦA BẠN
+// ===== FIREBASE =====
 const firebaseConfig = {
   apiKey: "AIzaSyCBh-wCR02v7WDHbFyiOdbauRi0pUUZ25Q",
   authDomain: "finaljsi-7d280.firebaseapp.com",
   projectId: "finaljsi-7d280",
 };
-    const nav = document.getElementById("navMenu");
-      const user = JSON.parse(localStorage.getItem("currentUser"));
 
-      if (user) {
-        nav.innerHTML = `
-      <span style="color:white">👋 Xin chào, ${user.username}</span>
-      <a href="#" id="logoutBtn">Đăng xuất</a>
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+// ===== KIỂM TRA LOGIN =====
+const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+
+if (!currentUser) {
+  alert("Bạn cần đăng nhập tài khoản giáo viên!");
+  window.location.href = "login.html";
+}
+
+if (currentUser.role !== "teacher") {
+  alert("Chỉ giáo viên mới được sử dụng!");
+  localStorage.removeItem("currentUser");
+  window.location.href = "login.html";
+}
+
+// ===== RENDER =====
+async function renderStudents() {
+  const list = document.getElementById("studentList");
+  list.innerHTML = "";
+
+  const querySnapshot = await getDocs(collection(db, "students"));
+
+  let count = 0;
+
+  querySnapshot.forEach((docSnap) => {
+    const s = docSnap.data();
+    const id = docSnap.id;
+    count++;
+
+    list.innerHTML += `
+      <tr>
+        <td>${s.name}</td>
+        <td>${s.class}</td>
+        <td>${s.email}</td>
+        <td>
+          <button class="btn btn-danger btn-sm" onclick="deleteStudent('${id}')">Xóa</button>
+        </td>
+      </tr>
     `;
-        document.getElementById("logoutBtn").onclick = () => {
-          localStorage.removeItem("currentUser");
-          location.reload();
-        };
-      } else {
-        nav.innerHTML = `
-      <a href="login.html">Đăng nhập</a>
-      <a href="register.html">Đăng ký</a>
-    `;
-      }
+  });
+
+  document.getElementById("total").innerText = count;
+}
+
+// ===== THÊM =====
+window.addStudent = async function () {
+  const name = prompt("Nhập tên học sinh:");
+  if (!name) return;
+
+  const className = prompt("Nhập lớp:");
+  if (!className) return;
+
+  const email = prompt("Nhập email:");
+  if (!email) return;
+
+  await addDoc(collection(db, "students"), {
+    name,
+    class: className,
+    email
+  });
+
+  renderStudents();
+};
+// ===== XÓA =====
+window.deleteStudent = async function (id) {
+  if (confirm("Bạn có chắc muốn xóa không?")) {
+    await deleteDoc(doc(db, "students", id));
+    renderStudents();
+  }
+};
+
+// ===== LOAD =====
+renderStudents();
+</script>
+
 </script>
 
 </body>
