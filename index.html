@@ -31,7 +31,7 @@
           <a class="nav-link" href="C:\Users\Nghia\.vscode\cinema\sanphamcuoikhoaJSi\hocsinh.html">Học sinh</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#">Điểm</a>
+          <a class="nav-link" href="C:\Users\Nghia\.vscode\cinema\sanphamcuoikhoaJSi\Điểm.html">Điểm</a>
         </li>
       </ul>
 
@@ -156,16 +156,16 @@ if (currentUser.role !== "teacher") {
   window.location.href = "login.html";
 }
 
-// ===== RENDER =====
+// ===== Dữ liệu trên web =====
 async function renderStudents() {
-  const list = document.getElementById("studentList");
+  const list = document.getElementById("studentList");//Lấy phần tử HTML có id là studentList.//
   list.innerHTML = "";
 
-  const querySnapshot = await getDocs(collection(db, "students"));
+  const querySnapshot = await getDocs(collection(db, "students")); 
 
-  let count = 0;
+  let count = 0; //Tạo biến đếm số lượng hsinh//
 
-  querySnapshot.forEach((docSnap) => {
+  querySnapshot.forEach((docSnap) => {//Duyệt từng học sinh trong firebase//
     const s = docSnap.data();
     const id = docSnap.id;
     count++;

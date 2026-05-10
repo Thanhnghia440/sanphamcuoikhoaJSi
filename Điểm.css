@@ -1,0 +1,20 @@
+    body{
+      background:#f5f5f5;
+    }
+
+    .card{
+      border:none;
+      border-radius:15px;
+    }
+
+    .table{
+      background:white;
+    }
+
+    input{
+      border-radius:10px !important;
+    }
+
+    .btn{
+      border-radius:10px;
+    }

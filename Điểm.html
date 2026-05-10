@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Quản lí điểm học sinh</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="Điểm.css">
+  <!-- Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container">
+
+    <a class="navbar-brand" href="index.html">
+     Quản lí học sinh
+    </a>
+
+    <button class="navbar-toggler"
+    data-bs-toggle="collapse"
+    data-bs-target="#nav">
+
+      <span class="navbar-toggler-icon"></span>
+
+    </button>
+
+    <div class="collapse navbar-collapse" id="nav">
+
+      <ul class="navbar-nav me-auto">
+
+        <li class="nav-item">
+          <a class="nav-link" href="index.html">
+            Trang chủ
+          </a>
+        </li>
+   <li class="nav-item">
+          <a class="nav-link" href="C:\Users\Nghia\.vscode\cinema\sanphamcuoikhoaJSi\hocsinh.html">Học sinh</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active" href="#">
+            Điểm
+          </a>
+        </li>
+
+      </ul>
+      <div>
+        <button class="btn btn-success me-2" onclick="window.location.href='login.html'">Đăng nhập</button>
+        <button class="btn btn-danger" onclick="window.location.href='register.html'">Đăng ký</button>
+      </div>
+    </div>
+
+  </div>
+</nav>
+
+<!-- CONTENT -->
+<div class="container mt-4">
+
+  <!-- FORM -->
+  <div class="card shadow p-4 mb-4">
+
+    <h3 class="mb-3">
+      📊 Nhập điểm học sinh
+    </h3>
+
+    <div class="row">
+
+      <div class="col-md-3 mb-2">
+        <input
+        type="text"
+        id="name"
+        class="form-control"
+        placeholder="Tên học sinh">
+      </div>
+
+      <div class="col-md-2 mb-2">
+        <input
+        type="text"
+        id="class"
+        class="form-control"
+        placeholder="Lớp">
+      </div>
+
+      <div class="col-md-2 mb-2">
+        <input
+        type="number"
+        id="math"
+        class="form-control"
+        placeholder="Toán">
+      </div>
+
+      <div class="col-md-2 mb-2">
+        <input
+        type="number"
+        id="literature"
+        class="form-control"
+        placeholder="Văn">
+      </div>
+
+      <div class="col-md-2 mb-2">
+        <input
+        type="number"
+        id="english"
+        class="form-control"
+        placeholder="Anh">
+      </div>
+
+      <div class="col-md-1 mb-2">
+
+        <button
+        class="btn btn-primary w-100"
+        onclick="addStudent()">
+
+          +
+
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- TABLE -->
+  <div class="card shadow p-3">
+
+    <h4 class="mb-3">
+      📋 Danh sách điểm
+    </h4>
+
+    <table class="table table-bordered text-center align-middle">
+
+      <thead class="table-dark">
+
+        <tr>
+
+          <th>Tên</th>
+
+          <th>Lớp</th>
+
+          <th>Toán</th>
+
+          <th>Văn</th>
+
+          <th>Anh</th>
+
+          <th>TB</th>
+
+          <th>Xóa</th>
+
+        </tr>
+
+      </thead>
+
+      <tbody id="score-list"></tbody>
+
+    </table>
+
+  </div>
+
+</div>
+
+<!-- Bootstrap -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
+<script src="Điểm.js">
+
+
+</script>
+
+</body>
+</html>

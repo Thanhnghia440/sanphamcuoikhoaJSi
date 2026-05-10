@@ -1,3 +1,20 @@
+window.onload = () => {
+  const user = JSON.parse(localStorage.getItem("currentUser"));
+  
+  if (user) {
+    const navDiv = document.querySelector(".navbar .btn-success").parentElement;
+
+    navDiv.innerHTML = `
+      <span class="text-white me-3">👋 ${user.username}</span>
+      <button class="btn btn-warning" onclick="logout()">Đăng xuất</button>
+    `;
+  }
+};
+
+function logout() {
+  localStorage.removeItem("currentUser");
+  window.location.href = "login.html";
+}
 const students = [
   // Khối 10
   {name: "Nguyễn Văn A", grade: "Khối 10", score: 9.5, img: "https://tse1.mm.bing.net/th/id/OIP.Q8YWjoNg8popkZIAnBkZXgHaI9?w=529&h=640&rs=1&pid=ImgDetMain&o=7&rm=3"},
